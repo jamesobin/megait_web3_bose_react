@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Spinner from "../components/Spinner";
 import VisitorCountChart from './VisitorCountChart';
 import Graph2 from './Graph2';
-import Graph3 from './Graph3';
+import OrderCountChart from './OrderCountChart';
 import Graph4 from './Graph4';
 
 const PagesContainer = styled.div`
@@ -20,7 +20,7 @@ const Pages = memo(() => {
     <PagesContainer>
       <VisitorCountChart />
       <Graph2 />
-      <Graph3 />
+      <OrderCountChart />
       <Graph4 />
     </PagesContainer>
   );
