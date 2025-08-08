@@ -1,60 +1,60 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.5'
-	id 'io.spring.dependency-management' version '1.1.7'
-	// ⭐⭐⭐⭐⭐ gradle이 node와 연동할 수 있는 플러그인 추가 ⭐⭐⭐⭐⭐ 
-	id 'com.github.node-gradle.node' version '7.0.2'
+   id 'java'
+   id 'org.springframework.boot' version '3.3.5'
+   id 'io.spring.dependency-management' version '1.1.7'
+   // ⭐⭐⭐⭐⭐ gradle이 node와 연동할 수 있는 플러그인 추가 ⭐⭐⭐⭐⭐ 
+   id 'com.github.node-gradle.node' version '7.0.2'
 }
 
 group = 'com.clonebose'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+   toolchain {
+      languageVersion = JavaLanguageVersion.of(17)
+   }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+   compileOnly {
+      extendsFrom annotationProcessor
+   }
 }
 
 repositories {
-	mavenCentral()
+   mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'com.github.ua-parser:uap-java:1.6.1'
-	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+   implementation 'org.springframework.boot:spring-boot-starter-mail'
+   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+   compileOnly 'org.projectlombok:lombok'
+   developmentOnly 'org.springframework.boot:spring-boot-devtools'
+   runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+   annotationProcessor 'org.projectlombok:lombok'
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+   implementation 'com.github.ua-parser:uap-java:1.6.1'
+   implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
-	// test추가
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	testCompileOnly 'org.projectlombok:lombok'
+   // test추가
+   testAnnotationProcessor 'org.projectlombok:lombok'
+   testCompileOnly 'org.projectlombok:lombok'
 
-	/** MariaDB를 사용하는 경우 */
-	implementation 'org.mariadb.jdbc:mariadb-java-client'
+   /** MariaDB를 사용하는 경우 */
+   implementation 'org.mariadb.jdbc:mariadb-java-client'
 
-	// spring-session-jdbc -> 스프링 세션 저장을 db에서 수행
-	implementation 'org.springframework.session:spring-session-jdbc'
-	// Restful API 문서 자동화
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+   // spring-session-jdbc -> 스프링 세션 저장을 db에서 수행
+   implementation 'org.springframework.session:spring-session-jdbc'
+   // Restful API 문서 자동화
+   implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+   useJUnitPlatform()
 }
 
 // ⭐⭐⭐ React 프로젝트 통합 설정 ⭐⭐⭐
@@ -82,6 +82,7 @@ task buildReact(type: YarnTask) {
     yarnCommand = ['build']
 }
 
+// 죽을 죄.
 bootRun {
    dependsOn startReactDev
 }

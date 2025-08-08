@@ -10,4 +10,3 @@ public interface VisitorService {
      */
     VisitorStatsDto getVisitorStats();
 }
-
