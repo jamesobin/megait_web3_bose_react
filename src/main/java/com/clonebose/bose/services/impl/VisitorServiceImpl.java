@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class VisitorServiceImpl implements VisitorService {
@@ -57,42 +56,16 @@ public class VisitorServiceImpl implements VisitorService {
                     String dayKey = String.format("%02d-%02d", regDate.getMonthValue(), regDate.getDayOfMonth());
                     dailyStats.put(dayKey, dailyStats.getOrDefault(dayKey, 0) + statistic.getDailyVisitorSum());
                 }
-            }
-        }
+            }        }
         
-        // 정렬된 순서로 Map 재구성 (과거 -> 현재 순서)
-        Map<String, Integer> sortedYearlyStats = yearlyStats.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (e1, e2) -> e1,
-                LinkedHashMap::new
-            ));
-            
-        Map<String, Integer> sortedMonthlyStats = monthlyStats.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (e1, e2) -> e1,
-                LinkedHashMap::new
-            ));
-            
-        Map<String, Integer> sortedDailyStats = dailyStats.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (e1, e2) -> e1,
-                LinkedHashMap::new
-            ));
+        // 이미 데이터베이스에서 날짜 순으로 정렬되어 온 데이터이므로
+        // LinkedHashMap의 순서가 자동으로 과거 -> 현재 순서가 됩니다
         
-        // DTO 빌더 패턴으로 생성 (정렬된 Map 사용)
+        // DTO 빌더 패턴으로 생성
         return VisitorStatsDto.builder()
-            .monthlyStats(sortedMonthlyStats)
-            .yearlyStats(sortedYearlyStats)
-            .dailyStats(sortedDailyStats)
+            .monthlyStats(monthlyStats)
+            .yearlyStats(yearlyStats)
+            .dailyStats(dailyStats)
             .totalVisitors(totalVisitors)
             .build();
     }

@@ -15,8 +15,8 @@ public interface VisitorMapper {
             "VALUES (#{dailyVisitorSum}, #{regDate}, #{editDate})")    
     int insertVisitorStatistic(VisitorStatistic visitorStatistic);    
     
-    // 전체 방문자 통계 데이터 조회
-    @Select("SELECT visitor_statistic_id, daily_visitor_sum, reg_date, edit_date FROM visitor_statistic")
+    // 전체 방문자 통계 데이터 조회 (날짜 오름차순 정렬: 과거 -> 현재)
+    @Select("SELECT visitor_statistic_id, daily_visitor_sum, reg_date, edit_date FROM visitor_statistic ORDER BY reg_date ASC")
     List<VisitorStatistic> getAllVisitorStatistics();
     
     // 총 방문자 수
