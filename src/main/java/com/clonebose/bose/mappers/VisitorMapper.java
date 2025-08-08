@@ -15,7 +15,7 @@ public interface VisitorMapper {
     int insertVisitorCount(VisititorCount visitorCount);    
     
     // 전체 방문자 데이터 조회
-    @Select("SELECT visit_year, visit_month, visit_day_of_week FROM visitorCount")
+    @Select("SELECT visited_at, visit_year, visit_month, visit_day_of_week FROM visitorCount")
     List<VisititorCount> getAllVisitorData();
     
     // 총 방문자 수
