@@ -25,8 +25,8 @@ public class VisitorServiceImpl implements VisitorService {
         
         // 현재 시간 기준으로 필터링 날짜 계산
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneYearAgo = now.minusYears(1);
-        LocalDateTime fiveYearsAgo = now.minusYears(5);
+        LocalDateTime oneYearAgo = now.minusMonths(11);
+        LocalDateTime fiveYearsAgo = now.minusYears(4);
         LocalDateTime sevenDaysAgo = now.minusDays(7);
         
         // 통계용 Map 초기화
