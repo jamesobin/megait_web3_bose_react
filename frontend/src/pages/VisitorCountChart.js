@@ -67,6 +67,7 @@ const VisitorCountChart = memo(() => {
   useEffect(() => {
     dispatch(getVisitorCount());
   }, [dispatch]);
+  
   // 선택된 통계 타입에 따라 차트 데이터 생성
   const chartData = useMemo(() => {
     if (!item) return null;

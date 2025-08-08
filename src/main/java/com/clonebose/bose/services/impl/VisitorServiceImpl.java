@@ -21,7 +21,6 @@ public class VisitorServiceImpl implements VisitorService {
     public VisitorStatsDto getVisitorStats() {
         // 전체 방문자 통계 데이터 조회
         List<VisitorStatistic> allData = visitorMapper.getAllVisitorStatistics();
-        int totalVisitors = visitorMapper.getTotalVisitorCount();
         
         // 현재 시간 기준으로 필터링 날짜 계산
         LocalDateTime now = LocalDateTime.now();
@@ -64,7 +63,6 @@ public class VisitorServiceImpl implements VisitorService {
             .monthlyStats(monthlyStats)
             .yearlyStats(yearlyStats)
             .dailyStats(dailyStats)
-            .totalVisitors(totalVisitors)
             .build();
     }
 }
