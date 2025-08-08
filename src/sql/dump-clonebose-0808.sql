@@ -79,12 +79,6 @@ CREATE TABLE `carts` (
 
 LOCK TABLES `carts` WRITE;
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES
-(6,11,1,7,1,0,'2025-07-23 21:50:25','2025-07-23 21:50:25'),
-(7,11,1,6,1,0,'2025-07-23 21:50:32','2025-07-23 21:50:32'),
-(8,11,3,15,1,0,'2025-07-23 21:51:29','2025-07-23 21:51:29'),
-(9,11,3,2,1,0,'2025-07-27 22:35:27','2025-07-27 22:35:27'),
-(10,11,22,4,80,0,'2025-07-28 01:32:03','2025-07-28 01:32:10');
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -245,16 +239,6 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES
-(1,6,'','김민수','010-1234-5678','44719','울산광역시 남구 삼산로 120','','문 앞에 놓아주세요','배송중',1000000,'뚜벅이배송',3000,0,'신용카드','2025-07-03 15:20:00','2025-07-04 10:00:00'),
-(2,9,'','최유진','010-4567-8901','13595','경기도 성남시 분당구 판교로 242','','경비실에 맡겨주세요','배송완료',2390000,'CJ택배',1500,0,'가상계좌','2025-07-02 09:30:00','2025-07-04 10:00:00'),
-(3,7,'','이지은','010-2345-6789','48058','부산광역시 해운대구 센텀동로 25','','빠른 배송 부탁','배송중',560000,'우체국택배',1200,0,'실시간계좌이체','2025-07-01 14:00:00','2025-07-04 10:00:00'),
-(4,5,'','서도철','010-4928-4826 ','06134','서울특별시 강남구 테헤란로 123','','안전하게 배송 부탁드립니다','배송완료',300000,'로젠택배',2500,0,'신용카드','2025-06-30 11:11:00','2025-07-04 10:00:00'),
-(5,10,'','한서연','010-5678-9012','21985','인천광역시 연수구 송도미래로 30','','졸리다','배송중',290000,'CJ택배',1500,0,'가상계좌','2025-07-04 10:00:00','2025-07-04 10:00:00'),
-(6,11,'2025071710264111','양지훈','01012345678','02594','서울 동대문구 서울시립대로2길 2','gdf','배송메모를 선택해 주세요.','취소완료',1592000,'한진택배',0,1,'신용카드','2025-07-17 10:26:41','2025-07-20 15:44:36'),
-(27,11,'2025072321513511',NULL,NULL,NULL,NULL,NULL,NULL,'결제대기중',737000,'한진택배',0,1,'신용카드','2025-07-23 21:51:35','2025-07-23 21:51:35'),
-(28,11,'2025072801315711',NULL,NULL,NULL,NULL,NULL,NULL,'결제대기중',3290000,'한진택배',0,1,'신용카드','2025-07-28 01:31:57','2025-07-28 01:32:16'),
-(29,11,'2025072801322811',NULL,NULL,NULL,NULL,NULL,NULL,'결제대기중',27096000,'한진택배',0,1,'신용카드','2025-07-28 01:32:28','2025-07-28 01:32:28');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,18 +277,6 @@ CREATE TABLE `orders_products` (
 
 LOCK TABLES `orders_products` WRITE;
 /*!40000 ALTER TABLE `orders_products` DISABLE KEYS */;
-INSERT INTO `orders_products` VALUES
-(1,6,201,16,'[BOSE] 보스 QC 이어버드',4,199000,'/products_images/earbuds/earbuds/qc_earbuds/qc_earbuds_black.jpg','중국,베트남','2025-07-17 10:26:41','2025-07-17 10:26:41'),
-(2,6,201,2,'[BOSE] 보스 QC 이어버드',4,199000,'/products_images/earbuds/earbuds/qc_earbuds/qc_earbuds_black.jpg','중국,베트남','2025-07-17 10:26:41','2025-07-17 10:26:41'),
-(13,27,102,15,'[BOSE] 보스 QC 헤드폰 이어쿠션 키트',1,39000,'/products_images/headphones/headphones_acc/qc_headphones_acc/qc_headphones_acc_tripleblack.jpg','중국','2025-07-23 21:51:35','2025-07-23 21:51:35'),
-(14,27,101,7,'[BOSE] 보스 QC 헤드폰',1,349000,'/products_images/headphones/headphones/qc_headphones/qc_headphones_tripleblack.jpg','태국','2025-07-23 21:51:35','2025-07-23 21:51:35'),
-(15,27,101,6,'[BOSE] 보스 QC 헤드폰',1,349000,'/products_images/headphones/headphones/qc_headphones/qc_headphones_tripleblack.jpg','태국','2025-07-23 21:51:35','2025-07-23 21:51:35'),
-(16,28,401,4,'[BOSE] 보스 TV 스피커 사운드바',10,329000,'http://localhost:8080/products_images/soundbar/soundbar/tv_speaker_black.jpg','말레이시아','2025-07-28 01:31:57','2025-07-28 01:31:57'),
-(17,29,401,4,'[BOSE] 보스 TV 스피커 사운드바',80,329000,'/products_images/soundbar/soundbar/tv_speaker/tv_speaker_black.jpg','말레이시아','2025-07-28 01:32:28','2025-07-28 01:32:28'),
-(18,29,102,15,'[BOSE] 보스 QC 헤드폰 이어쿠션 키트',1,39000,'/products_images/headphones/headphones_acc/qc_headphones_acc/qc_headphones_acc_tripleblack.jpg','중국','2025-07-28 01:32:28','2025-07-28 01:32:28'),
-(19,29,102,2,'[BOSE] 보스 QC 헤드폰 이어쿠션 키트',1,39000,'/products_images/headphones/headphones_acc/qc_headphones_acc/qc_headphones_acc_tripleblack.jpg','중국','2025-07-28 01:32:28','2025-07-28 01:32:28'),
-(20,29,101,7,'[BOSE] 보스 QC 헤드폰',1,349000,'/products_images/headphones/headphones/qc_headphones/qc_headphones_tripleblack.jpg','태국','2025-07-28 01:32:28','2025-07-28 01:32:28'),
-(21,29,101,6,'[BOSE] 보스 QC 헤드폰',1,349000,'/products_images/headphones/headphones/qc_headphones/qc_headphones_tripleblack.jpg','태국','2025-07-28 01:32:28','2025-07-28 01:32:28');
 /*!40000 ALTER TABLE `orders_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -711,20 +683,43 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES
-(1,'apple@gmail.com','password111','양땡땡','남','010-7777-2222','2025-06-15','서울시','','','양땡땡얼굴사진',0,0,0,0,'2025-06-15 10:00:00','2025-06-15 10:00:00'),
-(2,'banana@naver.com','암호23242','권땡땡','남','010-4535-6575','1999-09-09','제주도','','','권떙땡얼굴사진',0,0,0,0,'2025-01-02 15:00:00','2025-06-15 10:00:00'),
-(3,'cat@space.com','passsssworddd','성땡땡','남','010-3295-2895','1990-09-15','울릉도','','','성땡땡 얼굴사진',0,0,0,0,'2020-04-01 08:00:00','2025-06-15 10:00:00'),
-(4,'wood@gmail.com','passsssss','정땡땡','여','010-1111-5965','1999-07-20','독도','','','정땡땡 얼굴사진',0,0,0,0,'2000-01-15 07:00:00','2025-06-15 10:00:00'),
-(5,'moon745@naver.com','psps123','서도철','남','010-4928-4826','1987-07-26','서울특별시 강남구 테헤란로 123','06134','10층 1001호','/profile_images',0,0,0,0,'2016-01-27 10:02:03','2025-07-03 01:00:11'),
-(6,'user1@test.com','P@ssw0rd123!','김민수','남','010-1234-5678','1995-03-15','울산광역시 남구 삼산로 120','44719','7층 702호','/profile_images',0,0,0,0,'2018-01-19 11:02:03','2025-07-03 01:00:11'),
-(7,'hello2@mail.net','Test!0000','이지은','여','010-2345-6789','1988-11-22','부산광역시 해운대구 센텀동로 25','48058','A동 5층 503호','/profile_images',0,0,0,0,'2019-01-02 11:02:03','2025-07-03 01:00:11'),
-(8,'data3@sample.org','pwpwpwp524','박지훈','남','010-3456-7890','2001-07-09','대구광역시 수성구 달구벌대로 2450','42139','2동 201호','/profile_images',0,0,0,0,'2024-02-27 11:02:03','2025-07-03 01:00:11'),
-(9,'new4@domain.co.kr','ps!!!wd123','최유진','여','010-4567-8901','1992-01-30','경기도 성남시 분당구 판교로 242','13595','알파리움타워 8층 804호','/profile_images',0,0,0,0,'2021-01-27 11:02:03','2025-07-03 01:00:11'),
-(10,'test5@myemail.com','juccyPw534','한서연','여','010-5678-9012','1999-12-05','인천광역시 연수구 송도미래로 30','21985','에이동 3층 301호','/profile_images',0,0,0,0,'2023-01-27 11:02:03','2025-07-03 01:00:11'),
-(11,'ybox92@gmail.com','5bacd9f25613659b2fbd2f3a58822e5c','양지훈','남','01012345678','2019-02-15','서울 동대문구 서울시립대로2길 2','02594','ihity','/files/2025/07/09/46db7e44487d4fe5907f7cca8299a84a.jpg',1,1,1,0,'2025-07-09 15:06:44','2025-07-20 15:44:30'),
-(13,'test123@gmail.com','e19d5cd5af0378da05f63f891c7467af','테스트','남','010-1234-5678','1999-02-10','서울시 서초구','06236','101동 101호',NULL,1,0,0,0,'2025-07-23 21:13:26','2025-07-23 21:13:26');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `visitorCount`
+--
+
+DROP TABLE IF EXISTS `visitorCount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `visitorCount` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `visitor_ip` varchar(45) NOT NULL,
+  `visited_at` timestamp NOT NULL,
+  `visit_date` date NOT NULL COMMENT '날짜별 집계용 (YYYY-MM-DD)',
+  `visit_hour` tinyint(4) NOT NULL COMMENT '시간별 집계용 (0-23)',
+  `visit_year` year(4) NOT NULL COMMENT '연도별 집계용',
+  `visit_month` tinyint(4) NOT NULL COMMENT '월별 집계용 (1-12)',
+  `visit_week` tinyint(4) NOT NULL COMMENT '주차별 집계용 (1-53)',
+  `visit_day_of_week` tinyint(4) NOT NULL COMMENT '요일별 집계용 (1-7, 월-일)',
+  `reg_date` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_visit_date` (`visit_date`),
+  KEY `idx_visit_year_month` (`visit_year`,`visit_month`),
+  KEY `idx_visit_year_week` (`visit_year`,`visit_week`),
+  KEY `idx_visited_at` (`visited_at`),
+  KEY `idx_visitor_ip_date` (`visitor_ip`,`visit_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visitorCount`
+--
+
+LOCK TABLES `visitorCount` WRITE;
+/*!40000 ALTER TABLE `visitorCount` DISABLE KEYS */;
+/*!40000 ALTER TABLE `visitorCount` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -755,10 +750,6 @@ CREATE TABLE `wishlists` (
 
 LOCK TABLES `wishlists` WRITE;
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
-INSERT INTO `wishlists` VALUES
-(1,7,5,'2025-06-05 12:00:10','0000-00-00 00:00:00',0),
-(2,3,15,'2025-07-14 09:00:10','0000-00-00 00:00:00',0),
-(3,5,27,'2025-06-13 07:30:00','0000-00-00 00:00:00',0);
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -775,4 +766,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-08-07 15:19:15
+-- Dump completed on 2025-08-08 10:25:38
