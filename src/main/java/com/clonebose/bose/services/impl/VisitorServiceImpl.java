@@ -56,10 +56,8 @@ public class VisitorServiceImpl implements VisitorService {
                     String dayKey = String.format("%02d-%02d", regDate.getMonthValue(), regDate.getDayOfMonth());
                     dailyStats.put(dayKey, dailyStats.getOrDefault(dayKey, 0) + statistic.getDailyVisitorSum());
                 }
-            }        }
-        
-        // 이미 데이터베이스에서 날짜 순으로 정렬되어 온 데이터이므로
-        // LinkedHashMap의 순서가 자동으로 과거 -> 현재 순서가 됩니다
+            }        
+        }
         
         // DTO 빌더 패턴으로 생성
         return VisitorStatsDto.builder()
