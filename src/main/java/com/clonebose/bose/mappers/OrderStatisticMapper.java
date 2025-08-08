@@ -35,11 +35,11 @@ public interface OrderStatisticMapper {
 
     /**
      * 오늘 날짜의 통계 업데이트
-     * @param increment 증가시킬 주문 수
+     * @param increment 증가시킬 주문 금액
      * @return 업데이트된 행의 수
      */
     @Update("UPDATE order_statistic SET daily_order_sum = daily_order_sum + #{increment}, edit_date = NOW() " +
             "WHERE DATE(reg_date) = CURDATE()")
-    public int updateTodayStatistic(int increment);
+    public int updateTodayStatistic(Long increment);
 
 }
