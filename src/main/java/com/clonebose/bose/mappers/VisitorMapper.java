@@ -26,6 +26,7 @@ public interface VisitorMapper {
     // 오늘 날짜의 통계가 있는지 확인
     @Select("SELECT COUNT(*) FROM visitor_statistic WHERE DATE(reg_date) = CURDATE()")
     int getTodayStatisticCount();
+
       // 오늘 날짜의 통계 업데이트
     @Update("UPDATE visitor_statistic SET daily_visitor_sum = daily_visitor_sum + #{increment}, edit_date = NOW() " +
             "WHERE DATE(reg_date) = CURDATE()")

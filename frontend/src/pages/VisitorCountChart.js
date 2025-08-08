@@ -80,10 +80,10 @@ const VisitorCountChart = memo(() => {
         title = "월별 방문자 통계 (최근 1년)";
         backgroundColor = "rgba(54, 162, 235, 0.5)";
         borderColor = "rgba(54, 162, 235, 1)";
-        break;
-      case 'dayOfWeek':
-        data = item.dayOfWeekStats;
-        title = "요일별 방문자 통계 (최근 1주일)";
+        break;      
+      case 'daily':
+        data = item.dailyStats;
+        title = "최근 7일 방문자 통계";
         backgroundColor = "rgba(75, 192, 192, 0.5)";
         borderColor = "rgba(75, 192, 192, 1)";
         break;
@@ -120,11 +120,11 @@ const VisitorCountChart = memo(() => {
   return (
     <VisitorCountChartContainer>
       <ChartHeader>
-        <ChartTitle>방문자수</ChartTitle>
+        <ChartTitle>방문자수</ChartTitle>        
         <StatsSelect value={statsType} onChange={handleStatsTypeChange}>
           <option value="yearly">연별</option>
           <option value="monthly">월별</option>
-          <option value="dayOfWeek">요일별</option>
+          <option value="daily">최근 7일</option>
         </StatsSelect>
       </ChartHeader>
       <Spinner loading={loading} />

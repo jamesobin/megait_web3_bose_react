@@ -7,10 +7,10 @@ import com.clonebose.bose.services.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class VisitorServiceImpl implements VisitorService {
@@ -27,60 +27,73 @@ public class VisitorServiceImpl implements VisitorService {
         // 현재 시간 기준으로 필터링 날짜 계산
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime oneYearAgo = now.minusYears(1);
-        LocalDateTime oneWeekAgo = now.minusWeeks(1);
+        LocalDateTime fiveYearsAgo = now.minusYears(5);
+        LocalDateTime sevenDaysAgo = now.minusDays(7);
         
         // 통계용 Map 초기화
         Map<String, Integer> monthlyStats = new LinkedHashMap<>();
         Map<String, Integer> yearlyStats = new LinkedHashMap<>();
-        Map<String, Integer> dayOfWeekStats = new LinkedHashMap<>();
+        Map<String, Integer> dailyStats = new LinkedHashMap<>();
         
         // 전체 데이터를 순회하면서 통계 계산
         for (VisitorStatistic statistic : allData) {          
             LocalDateTime regDate = statistic.getRegDate();
             
             if (regDate != null) {
-                // 연별 통계 (전체 데이터)
-                String yearKey = String.valueOf(regDate.getYear());
-                yearlyStats.put(yearKey, yearlyStats.getOrDefault(yearKey, 0) + statistic.getDailyVisitorSum());
+                // 연별 통계 (최근 5년 데이터만)
+                if (regDate.isAfter(fiveYearsAgo)) {
+                    String yearKey = String.valueOf(regDate.getYear());
+                    yearlyStats.put(yearKey, yearlyStats.getOrDefault(yearKey, 0) + statistic.getDailyVisitorSum());
+                }
                 
                 // 월별 통계 (최근 1년 데이터만)
                 if (regDate.isAfter(oneYearAgo)) {
-                    String monthKey = regDate.getMonthValue() + "월";
+                    String monthKey = String.format("%d-%02d", regDate.getYear(), regDate.getMonthValue());
                     monthlyStats.put(monthKey, monthlyStats.getOrDefault(monthKey, 0) + statistic.getDailyVisitorSum());
                 }
                 
-                // 요일별 통계 (최근 1주일 데이터만)
-                if (regDate.isAfter(oneWeekAgo)) {
-                    String dayKey = getDayOfWeekName(regDate.getDayOfWeek().getValue());
-                    dayOfWeekStats.put(dayKey, dayOfWeekStats.getOrDefault(dayKey, 0) + statistic.getDailyVisitorSum());
+                // 날짜별 통계 (최근 7일 데이터만)
+                if (regDate.isAfter(sevenDaysAgo)) {
+                    String dayKey = String.format("%02d-%02d", regDate.getMonthValue(), regDate.getDayOfMonth());
+                    dailyStats.put(dayKey, dailyStats.getOrDefault(dayKey, 0) + statistic.getDailyVisitorSum());
                 }
             }
         }
         
-        // DTO 빌더 패턴으로 생성
+        // 정렬된 순서로 Map 재구성 (과거 -> 현재 순서)
+        Map<String, Integer> sortedYearlyStats = yearlyStats.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (e1, e2) -> e1,
+                LinkedHashMap::new
+            ));
+            
+        Map<String, Integer> sortedMonthlyStats = monthlyStats.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (e1, e2) -> e1,
+                LinkedHashMap::new
+            ));
+            
+        Map<String, Integer> sortedDailyStats = dailyStats.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (e1, e2) -> e1,
+                LinkedHashMap::new
+            ));
+        
+        // DTO 빌더 패턴으로 생성 (정렬된 Map 사용)
         return VisitorStatsDto.builder()
-            .monthlyStats(monthlyStats)
-            .yearlyStats(yearlyStats)
-            .dayOfWeekStats(dayOfWeekStats)
+            .monthlyStats(sortedMonthlyStats)
+            .yearlyStats(sortedYearlyStats)
+            .dailyStats(sortedDailyStats)
             .totalVisitors(totalVisitors)
             .build();
-    }
-    
-    /**
-     * 요일 숫자를 한글 요일명으로 변환
-     * @param dayOfWeek 1=월요일, 2=화요일, ..., 7=일요일
-     * @return 한글 요일명
-     */
-    private String getDayOfWeekName(int dayOfWeek) {
-        switch (dayOfWeek) {
-            case 1: return "월요일";
-            case 2: return "화요일";
-            case 3: return "수요일";
-            case 4: return "목요일";
-            case 5: return "금요일";
-            case 6: return "토요일";
-            case 7: return "일요일";
-            default: return "알 수 없음";
-        }
     }
 }
