@@ -19,10 +19,6 @@ public interface VisitorMapper {
     @Select("SELECT visitor_statistic_id, daily_visitor_sum, reg_date, edit_date FROM visitor_statistic ORDER BY reg_date ASC")
     List<VisitorStatistic> getAllVisitorStatistics();
     
-    // 총 방문자 수
-    @Select("SELECT SUM(daily_visitor_sum) FROM visitor_statistic")
-    int getTotalVisitorCount();
-    
     // 오늘 날짜의 통계가 있는지 확인
     @Select("SELECT COUNT(*) FROM visitor_statistic WHERE DATE(reg_date) = CURDATE()")
     int getTodayStatisticCount();
