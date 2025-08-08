@@ -50,3 +50,5 @@ logs/
 !.yarn/sdks
 !.yarn/versions
 .pnp.cjs
+yarn.lock
+package.json

@@ -1,5 +1,5 @@
 package com.clonebose.bose.mappers;
 
-public class UserMapper {
+public class UserStatisticMapper {
     
 }
