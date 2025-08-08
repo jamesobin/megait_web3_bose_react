@@ -1,13 +1,14 @@
 package com.clonebose.bose.services.impl;
 
 import com.clonebose.bose.mappers.VisitorMapper;
-import com.clonebose.bose.models.VisititorCount;
+import com.clonebose.bose.models.VisitorStatistic;
 import com.clonebose.bose.models.VisitorStatsDto;
 import com.clonebose.bose.services.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +16,12 @@ import java.util.Map;
 public class VisitorServiceImpl implements VisitorService {
 
     @Autowired
-    private VisitorMapper visitorMapper;    @Override
+    private VisitorMapper visitorMapper;    
+    
+    @Override
     public VisitorStatsDto getVisitorStats() {
-        // 전체 방문자 데이터 조회
-        List<VisititorCount> allData = visitorMapper.getAllVisitorData();
+        // 전체 방문자 통계 데이터 조회
+        List<VisitorStatistic> allData = visitorMapper.getAllVisitorStatistics();
         int totalVisitors = visitorMapper.getTotalVisitorCount();
         
         // 현재 시간 기준으로 필터링 날짜 계산
@@ -27,27 +30,30 @@ public class VisitorServiceImpl implements VisitorService {
         LocalDateTime oneWeekAgo = now.minusWeeks(1);
         
         // 통계용 Map 초기화
-        Map<String, Integer> monthlyStats = new HashMap<>();
-        Map<String, Integer> yearlyStats = new HashMap<>();
-        Map<String, Integer> dayOfWeekStats = new HashMap<>();
+        Map<String, Integer> monthlyStats = new LinkedHashMap<>();
+        Map<String, Integer> yearlyStats = new LinkedHashMap<>();
+        Map<String, Integer> dayOfWeekStats = new LinkedHashMap<>();
         
         // 전체 데이터를 순회하면서 통계 계산
-        for (VisititorCount visitor : allData) {          
+        for (VisitorStatistic statistic : allData) {          
+            LocalDateTime regDate = statistic.getRegDate();
             
-            // 연별 통계 (전체 데이터)
-            String yearKey = String.valueOf(visitor.getVisitYear());
-            yearlyStats.put(yearKey, yearlyStats.getOrDefault(yearKey, 0) + 1);
-            
-            // 월별 통계 (최근 1년 데이터만)
-            if (visitor.getVisitedAt() != null && visitor.getVisitedAt().isAfter(oneYearAgo)) {
-                String monthKey = visitor.getVisitMonth() + "월";
-                monthlyStats.put(monthKey, monthlyStats.getOrDefault(monthKey, 0) + 1);
-            }
-            
-            // 요일별 통계 (최근 1주일 데이터만)
-            if (visitor.getVisitedAt() != null && visitor.getVisitedAt().isAfter(oneWeekAgo)) {
-                String dayKey = getDayOfWeekName(visitor.getVisitDayOfWeek());
-                dayOfWeekStats.put(dayKey, dayOfWeekStats.getOrDefault(dayKey, 0) + 1);
+            if (regDate != null) {
+                // 연별 통계 (전체 데이터)
+                String yearKey = String.valueOf(regDate.getYear());
+                yearlyStats.put(yearKey, yearlyStats.getOrDefault(yearKey, 0) + statistic.getDailyVisitorSum());
+                
+                // 월별 통계 (최근 1년 데이터만)
+                if (regDate.isAfter(oneYearAgo)) {
+                    String monthKey = regDate.getMonthValue() + "월";
+                    monthlyStats.put(monthKey, monthlyStats.getOrDefault(monthKey, 0) + statistic.getDailyVisitorSum());
+                }
+                
+                // 요일별 통계 (최근 1주일 데이터만)
+                if (regDate.isAfter(oneWeekAgo)) {
+                    String dayKey = getDayOfWeekName(regDate.getDayOfWeek().getValue());
+                    dayOfWeekStats.put(dayKey, dayOfWeekStats.getOrDefault(dayKey, 0) + statistic.getDailyVisitorSum());
+                }
             }
         }
         
