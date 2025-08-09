@@ -5,7 +5,7 @@ import styled from "styled-components";
 /** 컴포넌트 참조 */
 import Spinner from "../components/Spinner";
 import VisitorCountChart from './VisitorCountChart';
-import Graph2 from './Graph2';
+import UserCountChart from './UserCountChart';
 import OrderCountChart from './OrderCountChart';
 import Graph4 from './Graph4';
 
@@ -19,7 +19,7 @@ const Pages = memo(() => {
   return (
     <PagesContainer>
       <VisitorCountChart />
-      <Graph2 />
+      <UserCountChart />
       <OrderCountChart />
       <Graph4 />
     </PagesContainer>
