@@ -7,7 +7,7 @@ import Spinner from "../components/Spinner";
 import VisitorCountChart from './VisitorCountChart';
 import UserCountChart from './UserCountChart';
 import OrderCountChart from './OrderCountChart';
-import Graph4 from './Graph4';
+import PopularProductChart from './PopularProductChart';
 
 const PagesContainer = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const Pages = memo(() => {
       <VisitorCountChart />
       <UserCountChart />
       <OrderCountChart />
-      <Graph4 />
+      <PopularProductChart />
     </PagesContainer>
   );
 });
