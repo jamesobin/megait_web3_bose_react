@@ -16,24 +16,18 @@ import {
 
 import { Bar } from 'react-chartjs-2';
 
-// Chart.js에서 import한 Chart컴포넌트 내에서 import 요소들을 등록한다.
 Chart.register(CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement);
 
 const PopularProductsChartContainer = styled.div`
   padding: 20px;
   flex: 1 1 calc(50% - 20px);
-  min-height: 600px; /* 높이 증가 */
+  min-height: 600px;
   height: 100%;
 `;
 
 const ChartContainer = styled.div`
-  height: 500px; /* 차트 높이 대폭 증가 */
+  height: 300px;
   width: 100%;
-  
-  /* 반응형 디자인 */
-  @media (max-width: 768px) {
-    height: 400px;
-  }
 `;
 
 const ChartHeader = styled.div`
@@ -126,28 +120,51 @@ const PopularProductChart = memo(() => {
       return null;
     }
 
-    // 상품명 줄임 처리 함수
+    // 상품명을 여러 줄로 나누는 함수
     const shortenProductName = (name) => {
-      if (!name) return name;
+      if (!name) return [''];
       
       // [BOSE] 제거
       let shortened = name.replace(/^\[BOSE\]\s*/, '');
       
-      // "보스" 제거 (중복 방지)
+      // 보스 제거
       shortened = shortened.replace(/^보스\s*/, '');
       
-      // 너무 긴 경우 핵심 단어만 추출
-      if (shortened.length > 20) {
-        // 주요 키워드 추출
-        const keywords = shortened.match(/(QC|울트라|오픈|이어버드|헤드폰|스피커|베이스|서라운드|모듈|플로어|스탠드)/g);
-        if (keywords && keywords.length > 0) {
-          return keywords.slice(0, 2).join(' '); // 최대 2개 키워드
+      // 긴 상품명을 여러 줄로 나누기
+      const maxLineLength = 12; // 한 줄에 최대 12자
+      const words = shortened.split(' ');
+      const lines = [];
+      let currentLine = '';
+      
+      for (const word of words) {
+        // 현재 줄에 단어를 추가했을 때의 길이 확인
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        
+        if (testLine.length <= maxLineLength) {
+          currentLine = testLine;
+        } else {
+          // 현재 줄이 비어있지 않으면 lines에 추가
+          if (currentLine) {
+            lines.push(currentLine);
+          }
+          // 새로운 줄 시작
+          currentLine = word;
         }
-        // 키워드가 없으면 앞부분만 자르기
-        return shortened.substring(0, 18) + '...';
       }
       
-      return shortened;
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+      
+      // 최대 2줄로 제한
+      const result = lines.slice(0, 2);
+      
+      // 2줄을 초과하는 경우 마지막 줄에 ... 추가
+      if (lines.length > 2) {
+        result[1] = result[1].substring(0, 9) + '...';
+      }
+      
+      return result.length > 0 ? result : ['상품명'];
     };
 
     const labels = Object.keys(data).map(shortenProductName);
@@ -200,7 +217,6 @@ const PopularProductChart = memo(() => {
                 legend: {
                   position: "bottom",
                   labels: {
-                    padding: 20,
                     font: {
                       size: 12
                     }
@@ -213,10 +229,6 @@ const PopularProductChart = memo(() => {
                     size: 18,
                     color: "#000",
                   },
-                  padding: {
-                    top: 10,
-                    bottom: 30
-                  }
                 },
               },
               scales: {
@@ -231,23 +243,25 @@ const PopularProductChart = memo(() => {
                 },
                 x: {
                   ticks: {
-                    maxRotation: 45,
-                    minRotation: 30,
+                    maxRotation: 0, // 회전 없이 수평으로 표시
+                    minRotation: 0,
                     font: {
-                      size: 11
+                      size: 10
                     },
-                    maxTicksLimit: 8 // 최대 8개 라벨만 표시
+                    maxTicksLimit: 8, // 최대 8개 라벨만 표시
+                    padding: 5,
+                    // 여러 줄 라벨을 위한 콜백 함수
+                    callback: function(value, index, ticks) {
+                      const label = this.getLabelForValue(value);
+                      return Array.isArray(label) ? label : [label];
+                    }
+                  },
+                  // x축과 라벨 사이의 여백 증가
+                  grid: {
+                    offset: true
                   }
                 }
               },
-              layout: {
-                padding: {
-                  top: 20,
-                  bottom: 20,
-                  left: 10,
-                  right: 10
-                }
-              }
             }}
           />
         </ChartContainer>

@@ -104,7 +104,7 @@ public class PopularProductServiceImpl implements PopularProductService {
                 
         } catch (Exception e) {
             // 에러 발생 시 더미 데이터로 폴백
-            System.err.println("DB 조회 실패, 더미 데이터 사용: " + e.getMessage());
+            System.err.println("DB 조회 실패: " + e.getMessage());
             return null;
         }
     }
