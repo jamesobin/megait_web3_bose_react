@@ -75,9 +75,7 @@ const PopularProductChart = memo(() => {
   
   // 선택된 통계 타입에 따라 차트 데이터 생성
   const chartData = useMemo(() => {
-    console.log('🔍 Debug - item data:', item); // 디버깅용
     if (!item) {
-      console.log('❌ No item data received');
       return null;
     }
 
@@ -125,11 +123,8 @@ const PopularProductChart = memo(() => {
     }
 
     if (!data) {
-      console.log(`❌ No ${statsType} data found`, data);
       return null;
     }
-
-    console.log(`✅ ${statsType} data:`, data); // 디버깅용
 
     // 상품명 줄임 처리 함수
     const shortenProductName = (name) => {
@@ -157,9 +152,6 @@ const PopularProductChart = memo(() => {
 
     const labels = Object.keys(data).map(shortenProductName);
     const values = Object.values(data);
-    
-    console.log('📊 Chart labels:', labels); // 디버깅용
-    console.log('📊 Chart values:', values); // 디버깅용
 
     return {
       chartData: {

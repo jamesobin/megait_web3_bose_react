@@ -18,6 +18,6 @@ public class ProductWithSalesDto {
     private Long productId;
     private String productName;  // 실제 상품명
     private Long totalSoldCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime regDate;
+    private LocalDateTime editDate;
 }

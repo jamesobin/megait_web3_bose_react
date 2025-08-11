@@ -8,6 +8,6 @@ public class PopularStatistic {
     private Long id;
     private Long productId;
     private Long totalSoldCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime regDate;
+    private LocalDateTime editDate;
 }

@@ -48,9 +48,9 @@ public class PopularProductServiceImpl implements PopularProductService {
             
             // 전체 데이터를 순회하면서 통계 계산
             for (ProductWithSalesDto statistic : allData) {
-                LocalDateTime createdAt = statistic.getCreatedAt();
+                LocalDateTime regDate = statistic.getRegDate();
                 
-                if (createdAt != null) {
+                if (regDate != null) {
                     String productName = statistic.getProductName(); // 실제 상품명 사용
                     Long soldCount = statistic.getTotalSoldCount();
                     
@@ -58,27 +58,27 @@ public class PopularProductServiceImpl implements PopularProductService {
                     allTimeStats.put(productName, allTimeStats.getOrDefault(productName, 0L) + soldCount);
                     
                     // 3년 내 통계
-                    if (createdAt.isAfter(threeYearsAgo)) {
+                    if (regDate.isAfter(threeYearsAgo)) {
                         threeYearStats.put(productName, threeYearStats.getOrDefault(productName, 0L) + soldCount);
                     }
                     
                     // 1년 내 통계
-                    if (createdAt.isAfter(oneYearAgo)) {
+                    if (regDate.isAfter(oneYearAgo)) {
                         yearlyStats.put(productName, yearlyStats.getOrDefault(productName, 0L) + soldCount);
                     }
                     
                     // 6개월 내 통계
-                    if (createdAt.isAfter(sixMonthsAgo)) {
+                    if (regDate.isAfter(sixMonthsAgo)) {
                         sixMonthStats.put(productName, sixMonthStats.getOrDefault(productName, 0L) + soldCount);
                     }
                     
                     // 한달 내 통계
-                    if (createdAt.isAfter(oneMonthAgo)) {
+                    if (regDate.isAfter(oneMonthAgo)) {
                         monthlyStats.put(productName, monthlyStats.getOrDefault(productName, 0L) + soldCount);
                     }
                     
                     // 일주일 내 통계
-                    if (createdAt.isAfter(oneWeekAgo)) {
+                    if (regDate.isAfter(oneWeekAgo)) {
                         weeklyStats.put(productName, weeklyStats.getOrDefault(productName, 0L) + soldCount);
                     }
                 }
