@@ -1,0 +1,111 @@
+@startuml UserStatisticController
+!theme plain
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    LifeLineBorderColor Black
+    LifeLineBackgroundColor LightGoldenRodYellow
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor LightGoldenRodYellow
+    ParticipantFontSize 11
+    ActorFontSize 11
+    MessageAlign direction
+}
+
+title 사용자 통계 API 시퀀스 다이어그램
+
+actor Client as "클라이언트"
+participant UserStatisticController as "UserStatisticController"
+participant RestHelper as "RestHelper"
+participant UserStatisticService as "UserStatisticService"
+participant UserStatisticServiceImpl as "UserStatisticServiceImpl"
+participant UserStatisticMapper as "UserStatisticMapper"
+participant Database as "Database"
+
+
+== 사용자 통계 조회 API ==
+
+Client -> UserStatisticController: GET /api/user/count
+note right
+  사용자 통계 조회 요청
+  최근 5년 연도별, 
+  최근 1년 월별,
+  최근 7일 일별 통계
+end note
+
+activate UserStatisticController
+
+UserStatisticController -> UserStatisticService: getUserStats()
+note right
+  사용자 통계 데이터 요청
+end note
+
+activate UserStatisticService
+
+UserStatisticServiceImpl -> UserStatisticMapper: getAllUserStatistics()
+note right
+  전체 사용자 통계 데이터 조회
+  날짜 오름차순 정렬
+end note
+
+activate UserStatisticMapper
+
+UserStatisticMapper -> Database: SELECT user_statistic_id, daily_user_sum, reg_date, edit_date\nFROM user_statistic ORDER BY reg_date ASC
+activate Database
+Database --> UserStatisticMapper: List<UserStatistic>
+deactivate Database
+
+UserStatisticMapper --> UserStatisticServiceImpl: List<UserStatistic>
+deactivate UserStatisticMapper
+
+note over UserStatisticServiceImpl
+  데이터 가공 처리:
+  1. 현재 시간 기준 필터링 날짜 계산
+     - 1년 전: now.minusMonths(11)
+     - 5년 전: now.minusYears(4)
+     - 7일 전: now.minusDays(7)
+  
+  2. 통계용 Map 초기화
+     - monthlyStats: Map<String, Integer>
+     - yearlyStats: Map<String, Integer>
+     - dailyStats: Map<String, Integer>
+     - totalUsers: int
+  
+  3. 전체 데이터 순회하여 통계 계산
+     - 연별 통계 (최근 5년)
+     - 월별 통계 (최근 1년)
+     - 일별 통계 (최근 7일)
+     - 총 사용자 수 계산
+end note
+
+UserStatisticServiceImpl -> UserStatisticServiceImpl: 데이터 가공 및 통계 계산
+
+UserStatisticServiceImpl --> UserStatisticService: UserStatsDto.builder()\n.monthlyStats(monthlyStats)\n.yearlyStats(yearlyStats)\n.dailyStats(dailyStats)\n.totalUsers(totalUsers)\n.build()
+deactivate UserStatisticService
+
+UserStatisticController -> RestHelper: sendJson(data)
+note right
+  JSON 응답 형태로 변환
+end note
+
+activate RestHelper
+RestHelper --> UserStatisticController: Map<String, Object>
+deactivate RestHelper
+
+UserStatisticController --> Client: HTTP 200 OK\n{ "status": 200, "message": "성공", "data": UserStatsDto }
+note left
+  사용자 통계 응답:
+  - monthlyStats: 월별 사용자 (년-월: 사용자수)
+  - yearlyStats: 연도별 사용자 (년: 사용자수)
+  - dailyStats: 일별 사용자 (월-일: 사용자수)
+  - totalUsers: 총 사용자수
+end note
+
+deactivate UserStatisticController
+
+== 에러 처리 ==
+
+UserStatisticController -> UserStatisticController: 예외 발생 시
+UserStatisticController --> Client: HTTP 500 Internal Server Error\n{ "status": 500, "message": "서버 내부 오류" }
+
+@enduml

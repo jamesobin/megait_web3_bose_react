@@ -1,0 +1,108 @@
+@startuml OrderStatisticRestController
+!theme plain
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    LifeLineBorderColor Black
+    LifeLineBackgroundColor LightGoldenRodYellow
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor LightGoldenRodYellow
+    ParticipantFontSize 11
+    ActorFontSize 11
+    MessageAlign direction
+}
+
+title 매출 통계 API 시퀀스 다이어그램
+
+actor Client as "클라이언트"
+participant OrderStatisticRestController as "OrderStatisticRestController"
+participant RestHelper as "RestHelper"
+participant OrderStatisticService as "OrderStatisticService"
+participant OrderStatisticServiceImpl as "OrderStatisticServiceImpl"
+participant OrderStatisticMapper as "OrderStatisticMapper"
+participant Database as "Database"
+
+== 매출 통계 조회 API ==
+
+Client -> OrderStatisticRestController: GET /api/order/count
+note right
+  매출 통계 조회 요청
+  최근 5년 연도별, 
+  최근 1년 월별,
+  최근 7일 일별 통계
+end note
+
+activate OrderStatisticRestController
+
+OrderStatisticRestController -> OrderStatisticService: getOrderStats()
+note right
+  매출 통계 데이터 요청
+end note
+
+activate OrderStatisticService
+
+OrderStatisticServiceImpl -> OrderStatisticMapper: getAllOrderStatistics()
+note right
+  전체 매출 통계 데이터 조회
+  날짜 오름차순 정렬
+end note
+
+activate OrderStatisticMapper
+
+OrderStatisticMapper -> Database: SELECT order_statistic_id, daily_order_sum, reg_date, edit_date\nFROM order_statistic ORDER BY reg_date ASC
+activate Database
+Database --> OrderStatisticMapper: List<OrderStatistic>
+deactivate Database
+
+OrderStatisticMapper --> OrderStatisticServiceImpl: List<OrderStatistic>
+deactivate OrderStatisticMapper
+
+note over OrderStatisticServiceImpl
+  데이터 가공 처리:
+  1. 현재 시간 기준 필터링 날짜 계산
+     - 1년 전: now.minusMonths(11)
+     - 5년 전: now.minusYears(4)
+     - 7일 전: now.minusDays(7)
+  
+  2. 통계용 Map 초기화
+     - monthlyStats: Map<String, Long>
+     - yearlyStats: Map<String, Long>
+     - dailyStats: Map<String, Long>
+  
+  3. 전체 데이터 순회하여 통계 계산
+     - 연별 통계 (최근 5년)
+     - 월별 통계 (최근 1년)
+     - 일별 통계 (최근 7일)
+end note
+
+OrderStatisticServiceImpl -> OrderStatisticServiceImpl: 데이터 가공 및 통계 계산
+
+OrderStatisticServiceImpl --> OrderStatisticService: OrderStatsDto.builder()\n.monthlyStats(monthlyStats)\n.yearlyStats(yearlyStats)\n.dailyStats(dailyStats)\n.build()
+deactivate OrderStatisticService
+
+OrderStatisticRestController -> RestHelper: sendJson(data)
+note right
+  JSON 응답 형태로 변환
+end note
+
+activate RestHelper
+RestHelper --> OrderStatisticRestController: Map<String, Object>
+deactivate RestHelper
+
+OrderStatisticRestController --> Client: HTTP 200 OK\n{ "status": 200, "message": "성공", "data": OrderStatsDto }
+note left
+  매출 통계 응답:
+  - monthlyStats: 월별 매출 (년-월: 매출액)
+  - yearlyStats: 연도별 매출 (년: 매출액)
+  - dailyStats: 일별 매출 (월-일: 매출액)
+  - totalOrder: 총 매출액
+end note
+
+deactivate OrderStatisticRestController
+
+== 에러 처리 ==
+
+OrderStatisticRestController -> OrderStatisticRestController: 예외 발생 시
+OrderStatisticRestController --> Client: HTTP 500 Internal Server Error\n{ "status": 500, "message": "서버 내부 오류" }
+
+@enduml

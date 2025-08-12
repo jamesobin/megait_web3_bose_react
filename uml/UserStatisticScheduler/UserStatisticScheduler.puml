@@ -1,0 +1,91 @@
+@startuml UserStatisticScheduler
+
+title 사용자 통계 스케줄러 - 5분마다 자동 실행
+
+participant "Spring Scheduler" as scheduler
+participant "UserStatisticScheduler" as controller
+participant "UserStatisticMapper" as mapper
+participant "user_statistic Table" as db
+
+note over scheduler
+    매 5분마다 자동 실행
+    @Scheduled(fixedRate = 300000)
+end note
+
+scheduler -> controller : generateUserData()
+activate controller
+
+note over controller
+    랜덤 사용자 수 증가량 생성
+    (1명~10명)
+end note
+
+controller -> controller : 랜덤 사용자 수 생성\n(1~10명)
+
+controller -> mapper : getTodayStatisticCount()
+activate mapper
+mapper -> db : SELECT COUNT(*) WHERE DATE(reg_date) = CURDATE()
+activate db
+db --> mapper : count (0 또는 1)
+deactivate db
+mapper --> controller : todayCount
+deactivate mapper
+
+alt todayCount == 0 (오늘 데이터 없음)
+    note over controller
+        오늘 첫 사용자 데이터 생성
+    end note
+    
+    controller -> controller : UserStatistic 객체 생성\n(dailyUserSum, regDate, editDate)
+    
+    controller -> mapper : insertUserStatistic(UserStatistic)
+    activate mapper
+    mapper -> db : INSERT INTO user_statistic\n(daily_user_sum, reg_date, edit_date)
+    activate db
+    db --> mapper : 삽입 성공
+    deactivate db
+    mapper --> controller : 삽입 완료
+    deactivate mapper
+    
+    note over controller
+        새로운 일일 사용자 통계 생성 완료
+        log.info("새로운 일일 사용자 통계 생성 완료")
+    end note
+
+else todayCount > 0 (오늘 데이터 존재)
+    note over controller
+        기존 사용자 데이터에 누적
+    end note
+      controller -> mapper : updateTodayStatistic(userIncrement)
+    activate mapper
+    mapper -> db : UPDATE user_statistic\nSET daily_user_sum = daily_user_sum + ?,\nedit_date = NOW()\nWHERE DATE(reg_date) = CURDATE()
+    activate db
+    db --> mapper : 업데이트 성공
+    deactivate db
+    mapper --> controller : 업데이트 완료
+    deactivate mapper
+    
+    note over controller
+        기존 일일 사용자 통계 업데이트 완료
+        log.info("기존 일일 사용자 통계 업데이트 완료")
+    end note
+end
+
+controller --> scheduler : 스케줄 작업 완료
+deactivate controller
+
+note over scheduler
+    다음 5분 후 자동 재실행
+end note
+
+== 예외 처리 ==
+
+group 예외 발생 시
+    controller -> controller : try-catch로 예외 처리
+    note over controller
+        log.error("사용자 데이터 업데이트 중 오류 발생")
+        스케줄러는 계속 실행됨
+    end note
+end
+
+@enduml
