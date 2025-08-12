@@ -83,7 +83,7 @@ public class OrderStatisticMapperTest {
     void updateTodayStatisticTest() {
         // Given - 오늘 날짜로 데이터 삽입
         orderStatisticMapper.insertOrderStatistic(testOrderStatistic);
-        int incrementValue = 50;
+        Long incrementValue = 50L;
         
         // 삽입 전 오늘의 카운트 확인
         int beforeCount = orderStatisticMapper.getTodayStatisticCount();
@@ -104,7 +104,7 @@ public class OrderStatisticMapperTest {
     void updateTodayStatisticWhenNoDataTest() {
         // Given - 현재 오늘 날짜에 데이터가 있는지 확인
         int todayCount = orderStatisticMapper.getTodayStatisticCount();
-        int incrementValue = 10;
+        Long incrementValue = 10L;
 
         // When
         int updateResult = orderStatisticMapper.updateTodayStatistic(incrementValue);
@@ -130,7 +130,7 @@ public class OrderStatisticMapperTest {
                 .build();
         orderStatisticMapper.insertOrderStatistic(stat);
 
-        int decrementValue = -30;
+        Long decrementValue = -30L;
 
         // When
         int updateResult = orderStatisticMapper.updateTodayStatistic(decrementValue);

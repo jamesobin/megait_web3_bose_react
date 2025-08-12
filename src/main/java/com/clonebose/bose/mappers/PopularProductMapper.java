@@ -2,8 +2,11 @@ package com.clonebose.bose.mappers;
 
 import com.clonebose.bose.models.PopularStatistic;
 import com.clonebose.bose.models.ProductWithSalesDto;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -35,4 +38,13 @@ public interface PopularProductMapper {
             "LEFT JOIN products p ON ps.product_id = p.product_id " +
             "ORDER BY ps.reg_date ASC")
     List<ProductWithSalesDto> getAllPopularStatisticsWithProductName();
+
+    @Insert("INSERT INTO popular_statistic (product_id, total_sold_count, reg_date, edit_date) VALUES (#{productId}, #{totalSoldCount}, #{regDate}, #{editDate})")
+    int insertPopularStatistic(PopularStatistic statistic);
+
+    @Select("SELECT COUNT(*) FROM popular_statistic WHERE DATE(reg_date) = CURDATE() AND product_id = #{productId}")
+    int getTodayStatisticCount(Long productId);
+
+    @Update("UPDATE popular_statistic SET total_sold_count = total_sold_count + #{increment}, edit_date = NOW() WHERE DATE(reg_date) = CURDATE() AND product_id = #{productId}")
+    int updateTodayStatistic(Long productId, Long increment);
 }
