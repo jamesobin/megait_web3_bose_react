@@ -40,7 +40,7 @@ public class OrderStatisticServiceImpl implements OrderStatisticService {
             LocalDateTime regDate = statistic.getRegDate();
             
             if (regDate != null) {
-                // 연별 통계 (최근 5년 데이터만)
+                // 연별 통계 (최근 3년 데이터만)
                 if (regDate.isAfter(fiveYearsAgo)) {
                     String yearKey = String.valueOf(regDate.getYear());
                     yearlyStats.put(yearKey, yearlyStats.getOrDefault(yearKey, 0L) + statistic.getDailyOrderSum());

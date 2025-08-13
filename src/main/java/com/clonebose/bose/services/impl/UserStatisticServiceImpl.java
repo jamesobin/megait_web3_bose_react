@@ -1,17 +1,16 @@
 package com.clonebose.bose.services.impl;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.stereotype.Service;
 import com.clonebose.bose.mappers.UserStatisticMapper;
 import com.clonebose.bose.models.UserStatistic;
 import com.clonebose.bose.models.UserStatsDto;
 import com.clonebose.bose.services.UserStatisticService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -44,7 +43,7 @@ public class UserStatisticServiceImpl implements UserStatisticService {
             totalUsers += dailyUserSum;
 
             if (regDate != null) {
-                // 연별 통계 (최근 5년 데이터만)
+                // 연별 통계 (최근 3년 데이터만)
                 if (regDate.isAfter(fiveYearsAgo)) {
                     String yearKey = String.valueOf(regDate.getYear());
                     yearlyStats.put(yearKey, yearlyStats.getOrDefault(yearKey, 0) + dailyUserSum);
