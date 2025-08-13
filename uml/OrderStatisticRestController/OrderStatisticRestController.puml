@@ -1,6 +1,8 @@
 @startuml OrderStatisticRestController
 !define DPI 300
 !theme plain
+skinparam defaultFontName "맑은 고딕"
+skinparam defaultFontSize 10
 skinparam sequence {
     ArrowColor Black
     ActorBorderColor Black
@@ -8,9 +10,13 @@ skinparam sequence {
     LifeLineBackgroundColor LightGoldenRodYellow
     ParticipantBorderColor Black
     ParticipantBackgroundColor LightGoldenRodYellow
+    ParticipantFontName "맑은 고딕"
     ParticipantFontSize 11
+    ActorFontName "맑은 고딕"
     ActorFontSize 11
     MessageAlign direction
+    NoteFontName "맑은 고딕"
+    NoteFontSize 10
 }
 
 title 매출 통계 API 시퀀스 다이어그램
