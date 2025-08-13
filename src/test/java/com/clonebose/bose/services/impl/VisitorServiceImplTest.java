@@ -91,7 +91,9 @@ public class VisitorServiceImplTest {
         assertThat(result.getDailyStats()).isNotNull();
         assertThat(result.getMonthlyStats()).isNotNull();
         assertThat(result.getYearlyStats()).isNotNull();
-    }    @Test
+    }    
+    
+    @Test
     @DisplayName("일별 통계 데이터 검증 테스트")
     void dailyStatsTest() {
         // Given
