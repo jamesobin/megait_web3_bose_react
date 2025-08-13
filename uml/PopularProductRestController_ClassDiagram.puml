@@ -1,0 +1,41 @@
+@startuml PopularProductRestController_ClassDiagram
+skinparam dpi 300
+
+class PopularProductRestController {
+    - popularProductService : PopularProductService
+    - restHelper : RestHelper
+    + PopularProductRestController(popularProductService : PopularProductService, restHelper : RestHelper)
+    + getPopularProducts() : Map<String, Object>
+}
+
+interface PopularProductService {
+    + getPopularProductStats() : PopularProductDto
+}
+
+class RestHelper {
+    - response : HttpServletResponse
+    + sendJson(status : int, message : String, data : Object, error : Exception) : Map<String, Object>
+    + sendJson(data : Object) : Map<String, Object>
+    + sendJson() : Map<String, Object>
+    + sendError(status : int, message : String) : Map<String, Object>
+    + badRequest(error : Exception) : Map<String, Object>
+    + serverError(message : String) : Map<String, Object>
+    + serverError(error : Exception) : Map<String, Object>
+}
+
+class PopularProductDto {
+    - weeklyStats : Map<String, Long>
+    - monthlyStats : Map<String, Long>
+    - sixMonthStats : Map<String, Long>
+    - yearlyStats : Map<String, Long>
+    - threeYearStats : Map<String, Long>
+    - allTimeStats : Map<String, Long>
+    + PopularProductDto()
+    + PopularProductDto(weeklyStats : Map<String, Long>, monthlyStats : Map<String, Long>, sixMonthStats : Map<String, Long>, yearlyStats : Map<String, Long>, threeYearStats : Map<String, Long>, allTimeStats : Map<String, Long>)
+}
+
+PopularProductRestController --> PopularProductService : HasA
+PopularProductRestController --> RestHelper : HasA
+PopularProductService --> PopularProductDto : HasA
+
+@enduml

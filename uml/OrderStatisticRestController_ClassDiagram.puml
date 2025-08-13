@@ -1,0 +1,38 @@
+@startuml OrderStatisticRestController_ClassDiagram
+skinparam dpi 300
+
+class OrderStatisticRestController {
+    - orderStatisticService : OrderStatisticService
+    - restHelper : RestHelper
+    + OrderStatisticRestController(orderStatisticService : OrderStatisticService, restHelper : RestHelper)
+    + getOrderCount() : Map<String, Object>
+}
+
+interface OrderStatisticService {
+    + getOrderStats() : OrderStatsDto
+}
+
+class RestHelper {
+    - response : HttpServletResponse
+    + sendJson(status : int, message : String, data : Object, error : Exception) : Map<String, Object>
+    + sendJson(data : Object) : Map<String, Object>
+    + sendJson() : Map<String, Object>
+    + sendError(status : int, message : String) : Map<String, Object>
+    + badRequest(error : Exception) : Map<String, Object>
+    + serverError(message : String) : Map<String, Object>
+    + serverError(error : Exception) : Map<String, Object>
+}
+
+class OrderStatsDto {
+    - monthlyStats : Map<String, Long>
+    - yearlyStats : Map<String, Long>
+    - dailyStats : Map<String, Long>
+    - totalOrder : Long
+    + OrderStatsDto(monthlyStats : Map<String, Long>, yearlyStats : Map<String, Long>, dailyStats : Map<String, Long>, totalOrder : Long)
+}
+
+OrderStatisticRestController --> OrderStatisticService : HasA
+OrderStatisticRestController --> RestHelper : HasA
+OrderStatisticService --> OrderStatsDto : HasA
+
+@enduml

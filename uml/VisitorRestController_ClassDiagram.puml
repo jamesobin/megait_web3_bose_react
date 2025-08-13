@@ -1,0 +1,38 @@
+@startuml VisitorRestController_ClassDiagram
+skinparam dpi 300
+
+class VisitorRestController {
+    - visitorService : VisitorService
+    - restHelper : RestHelper
+    + VisitorRestController(visitorService : VisitorService, restHelper : RestHelper)
+    + getVisitorCount() : Map<String, Object>
+}
+
+interface VisitorService {
+    + getVisitorStats() : VisitorStatsDto
+}
+
+class RestHelper {
+    - response : HttpServletResponse
+    + sendJson(status : int, message : String, data : Object, error : Exception) : Map<String, Object>
+    + sendJson(data : Object) : Map<String, Object>
+    + sendJson() : Map<String, Object>
+    + sendError(status : int, message : String) : Map<String, Object>
+    + badRequest(error : Exception) : Map<String, Object>
+    + serverError(message : String) : Map<String, Object>
+    + serverError(error : Exception) : Map<String, Object>
+}
+
+class VisitorStatsDto {
+    - monthlyStats : Map<String, Integer>
+    - yearlyStats : Map<String, Integer>
+    - dailyStats : Map<String, Integer>
+    - totalVisitors : int
+    + VisitorStatsDto(monthlyStats : Map<String, Integer>, yearlyStats : Map<String, Integer>, dailyStats : Map<String, Integer>, totalVisitors : int)
+}
+
+VisitorRestController --> VisitorService : HasA
+VisitorRestController --> RestHelper : HasA
+VisitorService --> VisitorStatsDto : HasA
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml UserStatisticConrtoller_ClassDiagram
+skinparam dpi 300
+
+class UserStatisticConrtoller {
+    - userStatisticService : UserStatisticService
+    - restHelper : RestHelper
+    + UserStatisticConrtoller(userStatisticService : UserStatisticService, restHelper : RestHelper)
+    + getUserCount() : Map<String, Object>
+}
+
+interface UserStatisticService {
+    + getUserStats() : UserStatsDto
+}
+
+class RestHelper {
+    - response : HttpServletResponse
+    + sendJson(status : int, message : String, data : Object, error : Exception) : Map<String, Object>
+    + sendJson(data : Object) : Map<String, Object>
+    + sendJson() : Map<String, Object>
+    + sendError(status : int, message : String) : Map<String, Object>
+    + badRequest(error : Exception) : Map<String, Object>
+    + serverError(message : String) : Map<String, Object>
+    + serverError(error : Exception) : Map<String, Object>
+}
+
+class UserStatsDto {
+    - monthlyStats : Map<String, Integer>
+    - yearlyStats : Map<String, Integer>
+    - dailyStats : Map<String, Integer>
+    - totalUsers : int
+    + UserStatsDto(monthlyStats : Map<String, Integer>, yearlyStats : Map<String, Integer>, dailyStats : Map<String, Integer>, totalUsers : int)
+}
+
+UserStatisticConrtoller --> UserStatisticService : HasA
+UserStatisticConrtoller --> RestHelper : HasA
+UserStatisticService --> UserStatsDto : HasA
+
+@enduml
