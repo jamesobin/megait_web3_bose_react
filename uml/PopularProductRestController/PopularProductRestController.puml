@@ -1,0 +1,122 @@
+@startuml PopularProductRestController
+!theme plain
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    LifeLineBorderColor Black
+    LifeLineBackgroundColor LightGoldenRodYellow
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor LightGoldenRodYellow
+    ParticipantFontSize 11
+    ActorFontSize 11
+    MessageAlign direction
+}
+
+title 인기 상품 통계 API 시퀀스 다이어그램
+
+actor Client as "클라이언트"
+participant PopularProductRestController as "PopularProductRestController"
+participant RestHelper as "RestHelper"
+participant PopularProductService as "PopularProductService"
+participant PopularProductServiceImpl as "PopularProductServiceImpl"
+participant PopularProductMapper as "PopularProductMapper"
+participant Database as "Database"
+
+== 인기 상품 통계 조회 API ==
+
+Client -> PopularProductRestController: GET /api/popular/products
+note right
+  인기 상품 통계 조회 요청
+  6단계 시간별 통계:
+  - 일주일 (7일)
+  - 한달 (30일)
+  - 6개월
+  - 1년
+  - 3년
+  - 전체 기간
+end note
+
+activate PopularProductRestController
+
+PopularProductRestController -> PopularProductService: getPopularProductStats()
+note right
+  인기 상품 통계 데이터 요청
+end note
+
+activate PopularProductService
+
+PopularProductServiceImpl -> PopularProductMapper: getAllPopularStatisticsWithProductName()
+note right
+  실제 상품명과 함께 
+  인기 상품 통계 데이터 조회
+  (LEFT JOIN products)
+end note
+
+activate PopularProductMapper
+
+PopularProductMapper -> Database: SELECT ps.product_id, COALESCE(p.product_name, CONCAT('Product_', ps.product_id)) as productName,\nps.total_sold_count, ps.reg_date, ps.edit_date\nFROM popular_statistic ps LEFT JOIN products p ON ps.product_id = p.product_id\nORDER BY ps.reg_date ASC
+activate Database
+Database --> PopularProductMapper: List<ProductWithSalesDto>
+deactivate Database
+
+PopularProductMapper --> PopularProductServiceImpl: List<ProductWithSalesDto>
+deactivate PopularProductMapper
+
+note over PopularProductServiceImpl
+  6단계 시간별 데이터 가공 처리:
+  1. 현재 시간 기준 필터링 날짜 계산
+     - 일주일 전: now.minusDays(7)
+     - 한달 전: now.minusMonths(1)
+     - 6개월 전: now.minusMonths(6)
+     - 1년 전: now.minusYears(1)
+     - 3년 전: now.minusYears(3)
+  
+  2. 6개 통계용 Map 초기화
+     - weeklyStats, monthlyStats, sixMonthStats
+     - yearlyStats, threeYearStats, allTimeStats
+  
+  3. 전체 데이터 순회하여 시간대별 통계 계산
+     - 같은 상품명의 판매량 합계 처리
+     - 각 시간 구간별 데이터 분류
+  
+  4. 각 카테고리별 TOP 8 상품 선택
+     - 판매량 내림차순 정렬
+     - 상위 8개만 추출
+end note
+
+PopularProductServiceImpl -> PopularProductServiceImpl: 6단계 시간별 데이터 가공 및 TOP 8 선택
+
+PopularProductServiceImpl --> PopularProductService: PopularProductDto.builder()\n.weeklyStats(weeklyStats)\n.monthlyStats(monthlyStats)\n.sixMonthStats(sixMonthStats)\n.yearlyStats(yearlyStats)\n.threeYearStats(threeYearStats)\n.allTimeStats(allTimeStats)\n.build()
+deactivate PopularProductService
+
+PopularProductRestController -> RestHelper: sendJson(data)
+note right
+  JSON 응답 형태로 변환
+end note
+
+activate RestHelper
+RestHelper --> PopularProductRestController: Map<String, Object>
+deactivate RestHelper
+
+PopularProductRestController --> Client: HTTP 200 OK\n{ "status": 200, "message": "성공", "data": PopularProductDto }
+note left
+  인기 상품 통계 응답:
+  - weeklyStats: 일주일 내 인기 상품 TOP 8
+  - monthlyStats: 한달 내 인기 상품 TOP 8
+  - sixMonthStats: 6개월 내 인기 상품 TOP 8
+  - yearlyStats: 1년 내 인기 상품 TOP 8
+  - threeYearStats: 3년 내 인기 상품 TOP 8
+  - allTimeStats: 전체 기간 인기 상품 TOP 8
+  
+  각 통계는 Map<String, Long> 형태
+  (상품명: 총 판매량)
+end note
+
+deactivate PopularProductRestController
+
+== 에러 처리 ==
+
+PopularProductRestController -> PopularProductRestController: 예외 발생 시
+PopularProductRestController --> Client: HTTP 500 Internal Server Error\n{ "status": 500, "message": "서버 내부 오류" }
+
+@enduml

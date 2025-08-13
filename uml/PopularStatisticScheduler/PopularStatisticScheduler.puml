@@ -1,0 +1,103 @@
+@startuml PopularStatisticScheduler
+
+title 인기 상품 통계 스케줄러 - 5분마다 자동 실행
+
+participant "Spring Scheduler" as scheduler
+participant "PopularStatisticSchedular" as controller
+participant "PopularProductMapper" as mapper
+participant "popular_statistic Table" as db
+
+note over scheduler
+    매 5분마다 자동 실행
+    @Scheduled(fixedRate = 300000)
+end note
+
+scheduler -> controller : generatePopularProductStatistics()
+activate controller
+
+note over controller
+    인기 상품 ID 리스트: [1, 2, 3, 4, 5]
+    각 상품별로 개별 처리
+end note
+
+loop 각 상품 ID별 (productId 1~5)
+    
+    controller -> controller : 랜덤 판매량 생성\n(1~10개)
+    
+    note over controller
+        productId별 개별 통계 처리
+    end note
+    
+    controller -> mapper : getTodayStatisticCount(productId)
+    activate mapper
+    mapper -> db : SELECT COUNT(*) WHERE product_id = ?\nAND DATE(reg_date) = CURDATE()
+    activate db
+    db --> mapper : count (0 또는 1)
+    deactivate db
+    mapper --> controller : todayCount
+    deactivate mapper
+
+    alt todayCount == 0 (해당 상품의 오늘 데이터 없음)
+        note over controller
+            해당 상품의 첫 통계 데이터 생성
+        end note
+        
+        controller -> controller : PopularStatistic 객체 생성\n(productId, totalSoldCount, regDate, editDate)
+        
+        controller -> mapper : insertPopularStatistic(PopularStatistic)
+        activate mapper
+        mapper -> db : INSERT INTO popular_statistic\n(product_id, total_sold_count, reg_date, edit_date)
+        activate db
+        db --> mapper : 삽입 성공
+        deactivate db
+        mapper --> controller : 삽입 완료
+        deactivate mapper
+        
+        note over controller
+            신규 통계 생성 완료
+            log.info("신규 통계 생성: productId={}")
+        end note
+
+    else todayCount > 0 (해당 상품의 오늘 데이터 존재)
+        note over controller
+            기존 판매량 데이터에 누적
+        end note
+          controller -> mapper : updateTodayStatistic(productId, soldIncrement)
+        activate mapper
+        mapper -> db : UPDATE popular_statistic\nSET total_sold_count = total_sold_count + ?,\nedit_date = NOW()\nWHERE DATE(reg_date) = CURDATE()\nAND product_id = ?
+        activate db
+        db --> mapper : 업데이트 성공
+        deactivate db
+        mapper --> controller : 업데이트 완료
+        deactivate mapper
+        
+        note over controller
+            기존 통계 업데이트 완료
+            log.info("기존 통계 업데이트: productId={}")
+        end note
+    end
+    
+    note over controller
+        다음 상품 ID로 계속 진행
+    end note
+    
+end
+
+controller --> scheduler : 모든 상품 통계 처리 완료
+deactivate controller
+
+note over scheduler
+    다음 5분 후 자동 재실행
+end note
+
+== 예외 처리 ==
+
+group 개별 상품 처리 중 예외 발생 시
+    controller -> controller : try-catch로 개별 상품별 예외 처리
+    note over controller
+        log.error("통계 집계 중 오류: productId={}")
+        해당 상품만 실패, 다른 상품은 계속 처리
+    end note
+end
+
+@enduml
