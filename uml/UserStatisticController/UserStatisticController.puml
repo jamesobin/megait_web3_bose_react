@@ -1,4 +1,5 @@
 @startuml UserStatisticController
+!define DPI 300
 !theme plain
 skinparam sequence {
     ArrowColor Black

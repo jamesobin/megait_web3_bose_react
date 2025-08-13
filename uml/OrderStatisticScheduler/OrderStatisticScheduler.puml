@@ -1,4 +1,17 @@
 @startuml OrderStatisticScheduler
+!define DPI 300
+!theme plain
+skinparam sequence {
+    ArrowColor Black
+    ActorBorderColor Black
+    LifeLineBorderColor Black
+    LifeLineBackgroundColor LightGoldenRodYellow
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor LightGoldenRodYellow
+    ParticipantFontSize 11
+    ActorFontSize 11
+    MessageAlign direction
+}
 
 title 매출 통계 스케줄러 - 5분마다 자동 실행
 
