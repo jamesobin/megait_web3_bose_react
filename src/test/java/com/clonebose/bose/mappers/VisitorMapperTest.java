@@ -1,6 +1,9 @@
 package com.clonebose.bose.mappers;
 
 import com.clonebose.bose.models.VisitorStatistic;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @DisplayName("VisitorMapper 테스트")
 @TestMethodOrder(OrderAnnotation.class)
+@Slf4j
 public class VisitorMapperTest {
 
     @Autowired
@@ -43,11 +47,14 @@ public class VisitorMapperTest {
 
         // Then
         assertThat(result).isEqualTo(1);
-    }    @Test
+    }   
+     
+    @Test
     @DisplayName("전체 방문자 통계 데이터 조회 테스트")
     void getAllVisitorStatisticsTest() {
         // When
         List<VisitorStatistic> statistics = visitorMapper.getAllVisitorStatistics();
+        log.debug("Visitor Statistics: {}", statistics);
 
         // Then
         assertThat(statistics).isNotEmpty();
